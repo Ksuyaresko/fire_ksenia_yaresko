@@ -6,7 +6,7 @@ import "./IERC20.sol";
 import "./extensions/IERC20Metadata.sol";
 import "./utils/Context.sol";
 
-contract KYCoin is Context, IERC20, IERC20Metadata {
+contract KYCoin2 is Context, IERC20, IERC20Metadata {
     mapping(address => uint256) private _balances;
 
     mapping(address => mapping(address => uint256)) private _allowances;
@@ -19,7 +19,7 @@ contract KYCoin is Context, IERC20, IERC20Metadata {
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
-		_mint(msg.sender, 1000);
+		_mint(msg.sender, 100000000000);
     }
 
     function name() public view virtual override returns (string memory) {
@@ -32,7 +32,7 @@ contract KYCoin is Context, IERC20, IERC20Metadata {
     }
 
     function decimals() public view virtual override returns (uint8) {
-        return 18;
+        return 2;
     }
 
 

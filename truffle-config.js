@@ -8,6 +8,9 @@ module.exports = {
       network_id: "*", // Match any network id
       gas: 5000000
     },
+    coverage: {
+      url: 'http://localhost:8555'
+    },
     rinkeby: {
       networkCheckTimeout: 1000000,
       timeoutBlocks: 500,
@@ -30,7 +33,7 @@ module.exports = {
     }
   },
   plugins: [
-    'truffle-plugin-verify'
+    'truffle-plugin-verify', 'solidity-coverage'
   ],
   api_keys: {
     etherscan: "TF29WNYZ915DSVQXV5YAWQRWTTHGB6ITWV"
