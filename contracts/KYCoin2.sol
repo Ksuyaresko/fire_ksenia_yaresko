@@ -15,11 +15,13 @@ contract KYCoin2 is Context, IERC20, IERC20Metadata {
 
     string private _name;
     string private _symbol;
+    address private _owner;
 
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
 		_mint(msg.sender, 100000000000);
+        _owner = msg.sender;
     }
 
     function name() public view virtual override returns (string memory) {
@@ -111,6 +113,10 @@ contract KYCoin2 is Context, IERC20, IERC20Metadata {
         _afterTokenTransfer(sender, recipient, amount);
     }
 
+//    function mint (address account, uint256 amount) public virtual override {
+//        require(msg.sender == _owner, "You are not the owner.");
+//        _mint(account, amount);
+//    }
     function _mint(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: mint to the zero address");
 
@@ -123,6 +129,10 @@ contract KYCoin2 is Context, IERC20, IERC20Metadata {
         _afterTokenTransfer(address(0), account, amount);
     }
 
+//    function burn (address account, uint256 amount) public virtual override {
+//        require(msg.sender == _owner, "You are not the owner.");
+//        _burn(account, amount);
+//    }
     function _burn(address account, uint256 amount) internal virtual {
         require(account != address(0), "ERC20: burn from the zero address");
 

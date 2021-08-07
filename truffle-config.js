@@ -32,6 +32,9 @@ module.exports = {
       }
     }
   },
+  mocha: {
+    enableTimeouts: false
+  },
   plugins: [
     'truffle-plugin-verify', 'solidity-coverage'
   ],

@@ -6,5 +6,5 @@ module.exports = function(deployer) {
   // if (network !== 'coverage') {
   //   deployer.deploy(KYCoin2, 'KY', 'KY Coin')
   // }
-  deployer.deploy(KYCoin2, 'KY', 'KY Coin')
+  deployer.deploy(KYCoin2, 'KY Coin', 'KY')
 };
