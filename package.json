@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "-": "^0.0.1",
+    "@openzeppelin/contracts": "^4.2.0",
     "@truffle/hdwallet-provider": "^1.4.2",
     "@types/mocha": "^9.0.0",
     "custom-env": "^2.0.1",
