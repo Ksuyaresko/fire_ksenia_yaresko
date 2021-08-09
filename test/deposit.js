@@ -44,26 +44,26 @@ describe("Deposit", function() {
         })
     })
 
-   describe("add and remve token by owner", function(){
-    it('add token', async function() {
-        const initialBalance = await tokenInstance.balanceOf(depositInstance.address)
-        await depositInstance.depositOwner(amount, {from: owner})
-        const balanceAfterDeposit = await tokenInstance.balanceOf(depositInstance.address)
-        assert.equal(balanceAfterDeposit.sub(initialBalance).toString(), amount.toString(), 'add token by owner didnt work')
+   describe("add and remve token by owner", function() {
+        it('add token', async function() {
+            const initialBalance = await tokenInstance.balanceOf(depositInstance.address)
+            await depositInstance.depositOwner(amount, {from: owner})
+            const balanceAfterDeposit = await tokenInstance.balanceOf(depositInstance.address)
+            assert.equal(balanceAfterDeposit.sub(initialBalance).toString(), amount.toString(), 'add token by owner didnt work')
+        })
+        it('remove token', async function() {
+            await depositInstance.depositOwner(amount, {from: owner})
+            await depositInstance.withdrawOwner(amount, {from: owner})
+            const balance = await tokenInstance.balanceOf(depositInstance.address)
+            assert.equal(balance.toString(), 0, 'remove token by owner didnt work')
+        })
+        it('add token not by owner', async function() {
+            await expectRevert(depositInstance.depositOwner(amount, {from: actor}), 'You are not the owner.',
+          )})
+         it('remove token not by owner', async function() {
+           await depositInstance.depositOwner(amount, {from: owner})
+           await expectRevert(depositInstance.withdrawOwner(amount, {from: actor}), 'You are not the owner.',
+         );
+       })
     })
-    it('remove token', async function() {
-        await depositInstance.depositOwner(amount, {from: owner})
-        await depositInstance.withdrawOwner(amount, {from: owner})
-        const balance = await tokenInstance.balanceOf(depositInstance.address)
-        assert.equal(balance.toString(), 0, 'remove token by owner didnt work')
-    })
-    it('add token not by owner', async function() {
-        await expectRevert(depositInstance.depositOwner(amount, {from: actor}), 'You are not the owner.',
-      );
-      it('remove token not by owner', async function() {
-        await depositInstance.depositOwner(amount, {from: owner})
-        await expectRevert(depositInstance.withdrawOwner(amount, {from: actor}), 'You are not the owner.',
-      );
-    })
-   })
 })
