@@ -16,17 +16,32 @@ describe("Deposit", function() {
     });
 
     describe("deposit contract", function() {
-        it('should add deposit', async function() {
+        it('should transfer token to contract', async function() {
             const amount = web3.utils.toBN(100)
+            const initialBalance = await tokenInstance.balanceOf(depositInstance.address)
 
             const approve = await tokenInstance.approve(depositInstance.address, amount, {from: owner})
-            const allowance = await tokenInstance.allowance(owner, depositInstance.address)
-            //console.log('2allowance', allowance)
             const deposit = await depositInstance.deposit(amount, {from: owner})
-            //console.log('d', deposit)
+
+            const balance = await tokenInstance.balanceOf(depositInstance.address)
+            assert.equal(balance.sub(initialBalance).toString(), amount.toString(), 'transfer token failed')
+        })
+        it('should show available deposit', async function() {
+            const amount = web3.utils.toBN(100)
+            const approve = await tokenInstance.approve(depositInstance.address, amount, {from: owner})
+            const deposit = await depositInstance.deposit(amount, {from: owner})
             const d = await depositInstance.availableToWithdraw({from: owner})
-            console.log('d', d)
-            assert.equal(d.toString(), amount.toString(), 'wrong deposit')
+            assert.equal(d.toString(), amount.toString(), 'wrong available deposit')
+        })
+        it('should withdraw deposit', async function() {
+            const amount = web3.utils.toBN(100)
+            const approve = await tokenInstance.approve(depositInstance.address, amount, {from: owner})
+            const deposit = await depositInstance.deposit(amount, {from: owner})
+
+            const balanceBeforeWithdraw = await tokenInstance.balanceOf(owner)
+            await depositInstance.withdraw(amount, {from: owner})
+            const balanceAfterWithdraw = await tokenInstance.balanceOf(owner)
+            assert.equal(balanceAfterWithdraw.sub(balanceBeforeWithdraw).toString(), amount.toString(), 'wrong withdraw to account')
         })
     })
 })
