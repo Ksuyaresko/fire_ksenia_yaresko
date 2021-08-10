@@ -12,6 +12,7 @@ contract Deposit {
     event Withdraw(address sender, uint amount);
 
     mapping(address => uint256) public deposits;
+    mapping(address => uint256) public depositsETH;
 
     constructor(IERC20 token_) {
         token = token_;
@@ -23,13 +24,28 @@ contract Deposit {
         deposits[msg.sender] += amount;
         emit Deposit(msg.sender, amount);
     }
+    function depositETH() public payable {
+        depositsETH[msg.sender] += msg.value;
+    }
+    function balanceOf() external view returns(uint256) {
+        return address (this).balance;
+    }
     function availableToWithdraw() public view returns (uint256) {
         return deposits[msg.sender];
+    }
+    function availableToWithdrawETH() public view returns (uint256) {
+        return depositsETH[msg.sender];
     }
     function withdraw(uint amount) public {
         require(deposits[msg.sender] >= amount);
         deposits[msg.sender] -= amount;
         token.transfer(msg.sender, amount);
+        emit Withdraw(msg.sender, amount);
+    }
+    function withdrawETH(uint amount) public {
+        require(depositsETH[msg.sender] >= amount);
+        depositsETH[msg.sender] -= amount;
+        payable(msg.sender).transfer(amount);
         emit Withdraw(msg.sender, amount);
     }
     function depositOwner(uint256 amount) public {

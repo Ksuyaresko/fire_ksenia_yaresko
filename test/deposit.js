@@ -44,6 +44,34 @@ describe("Deposit", function() {
         })
     })
 
+    describe("deposit ETH to contract", function() {
+        it('should transfer ETH to contract', async function() {
+            const initialBalance = await depositInstance.balanceOf()
+            const deposit = await depositInstance.depositETH({from: actor, value: amount})
+            const balance = await depositInstance.balanceOf()
+            assert.equal(balance.sub(initialBalance).toString(), amount.toString(), 'transfer ETH failed')
+        })
+        it('should show avaliable ETH', async function() {
+            const deposit = await depositInstance.depositETH({from: actor, value: amount})
+            const balance = await depositInstance.availableToWithdrawETH({from: actor})
+            assert.equal(balance.toString(), amount.toString(), 'wrong available ETH deposit')
+        })
+        it('should withdraw ETH', async function() {
+            await depositInstance.depositETH({from: actor, value: amount})
+            const balance = await web3.eth.getBalance(actor)
+            const withdraw = await depositInstance.withdrawETH(amount, {from: actor})
+            const balanceAfterWithdraw = await web3.eth.getBalance(actor)
+
+            const gasUsed = web3.utils.toBN(withdraw.receipt.gasUsed)
+            const tx = await web3.eth.getTransaction(withdraw.tx);
+            const gasPrice = web3.utils.toBN(tx.gasPrice);
+            const spend = gasUsed.mul(gasPrice)
+            const dif = web3.utils.toBN(balanceAfterWithdraw).add(spend).sub(web3.utils.toBN(balance))
+
+            assert.equal(dif.toString(), amount.toString(), 'wrong ETH withdraw')
+        })
+    })
+
    describe("add and remve token by owner", function() {
         it('add token', async function() {
             const initialBalance = await tokenInstance.balanceOf(depositInstance.address)
