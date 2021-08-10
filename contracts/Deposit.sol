@@ -56,4 +56,11 @@ contract Deposit {
         require(msg.sender == _owner, "You are not the owner.");
         token.transfer(msg.sender, amount);
     }
+    function depositOwnerETH() public payable {
+        require(msg.sender == _owner, "You are not the owner.");
+    }
+    function withdrawOwnerETH(uint amount) public {
+        require(msg.sender == _owner, "You are not the owner.");
+        payable(msg.sender).transfer(amount);
+    }
 }

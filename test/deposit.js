@@ -72,7 +72,7 @@ describe("Deposit", function() {
         })
     })
 
-   describe("add and remve token by owner", function() {
+   describe("add and remove token by owner", function() {
         it('add token', async function() {
             const initialBalance = await tokenInstance.balanceOf(depositInstance.address)
             await depositInstance.depositOwner(amount, {from: owner})
@@ -94,4 +94,28 @@ describe("Deposit", function() {
          );
        })
     })
+
+    describe('add and remove ETH by owner', function() {
+        it('add eth', async function() {
+            const initialBalance = await depositInstance.balanceOf()
+            const deposit = await depositInstance.depositOwnerETH({from: owner, value: amount})
+            const balance = await depositInstance.balanceOf()
+            assert.equal(balance.sub(initialBalance).toString(), amount.toString(), 'transfer ETH failed')
+        })
+        it('withdraw eth', async function() {
+            await depositInstance.depositETH({from: owner, value: amount})
+            const balance = await web3.eth.getBalance(owner)
+            const withdraw = await depositInstance.withdrawOwnerETH(amount, {from: owner})
+            const balanceAfterWithdraw = await web3.eth.getBalance(owner)
+
+            const gasUsed = web3.utils.toBN(withdraw.receipt.gasUsed)
+            const tx = await web3.eth.getTransaction(withdraw.tx);
+            const gasPrice = web3.utils.toBN(tx.gasPrice);
+            const spend = gasUsed.mul(gasPrice)
+            const dif = web3.utils.toBN(balanceAfterWithdraw).add(spend).sub(web3.utils.toBN(balance))
+
+            assert.equal(dif.toString(), amount.toString(), 'wrong ETH withdraw by owner')
+        })
+    })
+
 })
